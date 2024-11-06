@@ -18,19 +18,22 @@ class ConfigManager:
                     "name": "OpenAI",
                     "base_url": "https://api.openai.com/v1",
                     "api_type": "openai",
-                    "models": ["gpt-3.5-turbo", "gpt-4"]
+                    "models": ["gpt-3.5-turbo", "gpt-4"],
+                    "api_key": ""  
                 },
                 {
                     "name": "Azure OpenAI",
                     "base_url": "https://your-azure-endpoint.openai.azure.com/",
                     "api_type": "azure",
-                    "models": ["gpt-3.5-turbo", "gpt-4"]
+                    "models": ["gpt-3.5-turbo", "gpt-4"],
+                    "api_key": ""  # 新增API Key字段
                 }
             ],
             "default_settings": {
                 "source_lang": "English",
                 "target_lang": "Chinese",
-                "max_tokens": 4096
+                "max_tokens": 4096,
+                "last_used_api": "OpenAI"  # 新增最后使用的API记录
             }
         }
 
@@ -67,7 +70,8 @@ class ConfigManager:
             "name": name,
             "base_url": base_url,
             "api_type": api_type,
-            "models": models
+            "models": models,
+            "api_key": ""  # 新增API Key字段
         }
         
         # 检查是否已存在
@@ -94,6 +98,26 @@ class ConfigManager:
             if api['name'] == api_name:
                 return api['models']
         return []
+
+    def save_api_key(self, api_name: str, api_key: str):
+        for api in self.config['apis']:
+            if api['name'] == api_name:
+                api['api_key'] = api_key
+                break
+        self.save_config()
+
+    def get_api_key(self, api_name: str) -> str:
+        for api in self.config['apis']:
+            if api['name'] == api_name:
+                return api['api_key']
+        return ""
+
+    def set_last_used_api(self, api_name: str):
+        self.config['default_settings']['last_used_api'] = api_name
+        self.save_config()
+
+    def get_last_used_api(self) -> str:
+        return self.config['default_settings'].get('last_used_api', 'OpenAI')
 
 # 全局配置管理器
 config_manager = ConfigManager()
