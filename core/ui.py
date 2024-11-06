@@ -19,7 +19,7 @@ class TranslatorApp:
 
         # 主窗口设置
         self.master = master
-        master.title("字幕翻译助手 v2.1")
+        master.title("字幕翻译助手 v2.0")
         
         # 窗口大小和位置
         window_width = 900
@@ -58,6 +58,15 @@ class TranslatorApp:
 
         # 初始化文件路径列表
         self.file_paths = []
+
+        # 设置默认API和API Key
+        last_used_api = config_manager.get_last_used_api()
+        self.api_select.set(last_used_api)
+        self.update_models(last_used_api)
+        
+        # 从配置中获取上次使用的API Key
+        last_api_key = config_manager.get_api_key(last_used_api)
+        self.api_key_entry.insert(0, last_api_key)
 
     def create_file_section(self):
         # 文件选择框架
@@ -152,7 +161,6 @@ class TranslatorApp:
 
         # 初始化模型
         self.update_models(self.api_select.get())
-
     def create_translation_settings(self):
         settings_frame = ctk.CTkFrame(self.main_frame)
         settings_frame.pack(padx=10, pady=10, fill="x")
@@ -273,9 +281,17 @@ class TranslatorApp:
 
         # 检查API Key
         api_key = self.api_key_entry.get()
+        api_name = self.api_select.get()
+        
         if not api_key:
             messagebox.showwarning("警告", "请输入API Key")
             return
+
+        # 保存API Key到配置文件
+        config_manager.save_api_key(api_name, api_key)
+        
+        # 记录最后使用的API
+        config_manager.set_last_used_api(api_name)
 
         # 多线程执行翻译
         translation_thread = threading.Thread(
@@ -283,7 +299,6 @@ class TranslatorApp:
             daemon=True
         )
         translation_thread.start()
-
     def run_translation(self):
         """翻译执行逻辑"""
         try:
