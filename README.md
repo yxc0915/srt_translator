@@ -27,6 +27,7 @@ subtitle_translator/
 │   ├── file_handler.py    # 文件处理模块
 │   ├── translator.py      # AI翻译模块
 │   ├── prompts.py         # 提示词模块
+│   ├── subtitle_translator.py # 字幕翻译模块
 │   └── ui.py              # 用户界面模块
 │
 └── output/                # 翻译输出目录
