@@ -152,6 +152,3 @@ python app.py
 - 欢迎提交 Issue 和 Pull Request
 - 如遇到问题，请附带详细的错误信息
 
-## 许可证
-
-[LICENSE]
