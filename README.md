@@ -1,4 +1,4 @@
-# 字幕翻译助手 (Subtitle Translator)
+# 字幕翻译助手 (Srt Translator)
 
 ## 项目简介
 
@@ -67,12 +67,12 @@ subtitle_translator/
 ### 1. 环境准备
 
 #### 推荐 Python 版本
-- Python 3.8+
+- Python 3.12+
 
 #### 克隆项目
 ```bash
-git clone https://github.com/yourusername/subtitle-translator.git
-cd subtitle-translator
+git clone https://github.com/yxc0915/srt_translator.git
+cd srt_translator
 ```
 
 ### 2. 创建虚拟环境（可选但推荐）
