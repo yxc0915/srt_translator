@@ -3,7 +3,12 @@
 ## 项目简介
 
 这是一个基于 Python 的跨平台字幕翻译工具，支持多种 AI 翻译 API，提供简单易用的图形界面。
-![2d96908fd590a718606775e2d8b92d33](https://github.com/user-attachments/assets/f8f86a6a-b269-43ea-8b11-fb47d022c499)
+
+## 使用示范
+
+
+https://github.com/user-attachments/assets/2efcc7cc-e0a3-4911-8925-d012c2313750
+
 
 
 ## 功能特点
