@@ -24,7 +24,7 @@ class ConfigManager:
                     "name": "Azure OpenAI",
                     "base_url": "https://your-azure-endpoint.openai.azure.com/",
                     "api_type": "azure",
-                    "models": ["gpt-35-turbo", "gpt-4"]
+                    "models": ["gpt-3.5-turbo", "gpt-4"]
                 }
             ],
             "default_settings": {
