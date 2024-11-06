@@ -19,7 +19,7 @@ class TranslatorApp:
 
         # 主窗口设置
         self.master = master
-        master.title("字幕翻译助手 v2.0")
+        master.title("字幕翻译助手 v2.1")
         
         # 窗口大小和位置
         window_width = 900
