@@ -29,15 +29,19 @@ subtitle_translator/
 ├── config.py              # 配置管理
 ├── requirements.txt       # 依赖文件
 │
-├── core/
-│   ├── __init__.py
-│   ├── file_handler.py    # 文件处理模块
-│   ├── translator.py      # AI翻译模块
-│   ├── prompts.py         # 提示词模块
-│   ├── subtitle_translator.py # 字幕翻译模块
-│   └── ui.py              # 用户界面模块
-│
-└── output/                # 翻译输出目录
+└── core/
+    ├── __init__.py
+    ├── file_handler.py    # 文件处理模块
+    ├── translator.py      # AI翻译模块
+    ├── prompts.py         # 提示词模块
+    ├── subtitle_translator.py # 字幕翻译模块
+    ├── ui_base.py         # 基础UI框架
+    └── page/              # 页面实现
+        ├── __init__.py
+        ├── home_page.py   # 主页
+        ├── settings_page.py # 设置页面
+        └── translator_page.py # 翻译页面
+
 ```
 
 ### 文件详细说明
