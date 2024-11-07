@@ -97,36 +97,62 @@ class SmartSubtitleTranslator:
             return None
 
     def translate_with_context(self, subtitles):
-        """第二阶段：基于上下文进行批量翻译，增强错误处理"""
+        """第二阶段：基于上下文进行批量翻译"""
         if not self.context_summary:
             print("警告：未进行内容分析，将使用默认翻译")
             self.context_summary = f"这是一个需要翻译的字幕文件。请保持原文的语气和风格。"
-
-        # 创建一个专门处理翻译错误的方法
-        def safe_translate_subtitle(subtitle, context_summary):
+    
+        # 创建一个用于存储已翻译结果的共享列表
+        translated_texts = [None] * len(subtitles)
+    
+        def safe_translate_subtitle(subtitle, context_summary, subtitles, translated_texts):
             """
-            安全的字幕翻译方法，包含多级错误处理
+            安全的字幕翻译方法，支持部分并发翻译
             
-            :param subtitle: 字幕对象
+            :param subtitle: 当前字幕对象
             :param context_summary: 上下文摘要
+            :param subtitles: 所有字幕列表
+            :param translated_texts: 共享的翻译结果列表
             :return: 翻译结果或错误信息
             """
+            current_index = subtitles.index(subtitle)
+            
+            # 获取已翻译的前文（如果有）
+            prev_context = []
+            for i in range(max(0, current_index-10), current_index):
+                if translated_texts[i] is not None:
+                    prev_context.append(translated_texts[i])
+                else:
+                    prev_context.append(subtitles[i].text)
+            
+            # 获取未翻译的后文
+            next_context = subtitles[current_index+1:min(len(subtitles), current_index+11)]
+            next_text = "\n".join([s.text for s in next_context])
+            
             max_retries = 3
             for retry in range(max_retries):
                 try:
                     # 构建翻译提示
                     translation_prompt = f"""
-                    你是一位专业的字幕翻译专家。以下是关于这个视频/内容的背景信息：
-
+                    你是一个专业的字幕翻译专家。以下是关于这个视频/内容的背景信息：
+    
                     {context_summary}
-
+    
                     翻译要求：
-                    1. 将文本从原语言翻译成{self.target_language}
+                    1. 仅翻译"待翻译文本"部分
                     2. 保持原文的语气和风格
                     3. 确保翻译自然流畅
-                    4. 注意上下文的连贯性
-
+                    4. 严格只返回翻译结果，不要添加任何其他内容
+    
+                    已翻译上文（前10句）：
+                    {"\n".join(prev_context)}
+    
                     待翻译文本：{subtitle.text}
+    
+                    未翻译下文（后10句）：
+                    {next_text}
+    
+                    请只返回待翻译文本的翻译结果。
                     """
                     
                     # 尝试翻译
@@ -139,6 +165,9 @@ class SmartSubtitleTranslator:
                     # 检查翻译结果
                     if not translated_text or translated_text.strip() == '':
                         raise ValueError("翻译结果为空")
+                    
+                    # 移除可能的额外描述
+                    translated_text = translated_text.strip().split('\n')[0].strip()
                     
                     return translated_text
                 
@@ -161,27 +190,33 @@ class SmartSubtitleTranslator:
             
             # 理论上不会执行到这里，但保险起见
             return f"[翻译失败] {subtitle.text}"
-
+    
         # 使用线程池进行并发翻译
         with concurrent.futures.ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             # 准备翻译任务
             translation_futures = [
-                executor.submit(safe_translate_subtitle, subtitle, self.context_summary) 
-                for subtitle in subtitles
+                executor.submit(
+                    safe_translate_subtitle, 
+                    subtitle, 
+                    self.context_summary, 
+                    subtitles, 
+                    translated_texts
+                ) for subtitle in subtitles
             ]
             
             # 收集翻译结果
-            translated_texts = []
             for future in concurrent.futures.as_completed(translation_futures):
                 try:
+                    index = translation_futures.index(future)
                     translated_text = future.result()
-                    translated_texts.append(translated_text)
+                    translated_texts[index] = translated_text
                 except Exception as e:
                     print(f"处理字幕翻译任务时发生异常: {e}")
                     # 如果任务本身抛出异常，返回原文
-                    translated_texts.append("[处理失败]")
+                    translated_texts[index] = "[处理失败]"
             
             return translated_texts
+
 
     def process_subtitle_file(self, file_path, target_language) -> Tuple[str, str]:
         """完整的字幕处理流程，增加全面的错误处理"""
