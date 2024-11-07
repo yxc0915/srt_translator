@@ -1,4 +1,4 @@
-from core.ui import run_app
+from core.ui_base import run_app
 
 if __name__ == "__main__":
     run_app()

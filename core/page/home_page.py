@@ -42,16 +42,7 @@ class HomePage(ctk.CTkFrame):
             )
             feature_label.pack(pady=5, fill="x")
 
-        # 快速开始按钮
-        start_button = ctk.CTkButton(
-            self, 
-            text="快速开始翻译", 
-            command=self.goto_translator,
-            fg_color="#4CAF50",
-            hover_color="#45a049",
-            font=("Microsoft YaHei", 14)
-        )
-        start_button.pack(pady=20)
+
 
         # 帮助链接
         help_frame = ctk.CTkFrame(self, fg_color="transparent")
@@ -75,13 +66,6 @@ class HomePage(ctk.CTkFrame):
         )
         docs_link.pack(side="left", padx=10)
 
-    def goto_translator(self):
-        # 这里假设 self.master 是 BaseApp 实例
-        # 调用 BaseApp 中的 show_page 方法切换到翻译页面
-        if hasattr(self.master, 'show_page'):
-            self.master.show_page("翻译")
-        else:
-            messagebox.showwarning("提示", "无法切换到翻译页面")
 
 
     def open_github(self):
