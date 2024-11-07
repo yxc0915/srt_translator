@@ -59,6 +59,9 @@ class TranslatorApp:
         # 初始化文件路径列表
         self.file_paths = []
 
+        # 初始化专用词汇列表
+        self.custom_vocab = []
+
         # 设置默认API和API Key
         last_used_api = config_manager.get_last_used_api()
         self.api_select.set(last_used_api)
@@ -161,6 +164,7 @@ class TranslatorApp:
 
         # 初始化模型
         self.update_models(self.api_select.get())
+
     def create_translation_settings(self):
         settings_frame = ctk.CTkFrame(self.main_frame)
         settings_frame.pack(padx=10, pady=10, fill="x")
@@ -176,6 +180,59 @@ class TranslatorApp:
         self.temperature = ctk.CTkEntry(settings_frame, width=100)
         self.temperature.pack(side="left", padx=5)
         self.temperature.insert(0, "0.7")
+
+        # 专用词汇按钮
+        add_vocab_button = ctk.CTkButton(
+            settings_frame, 
+            text="添加专用词汇", 
+            command=self.show_add_vocab_dialog,
+            fg_color="#FFA500",  # 橙色
+            hover_color="#FF8C00"
+        )
+        add_vocab_button.pack(side="left", padx=5)
+
+    def show_add_vocab_dialog(self):
+        """显示添加专用词汇对话框"""
+        dialog = ctk.CTkToplevel(self.master)
+        dialog.title("添加专用词汇")
+        dialog.geometry("400x500")
+
+        # 说明标签
+        ctk.CTkLabel(
+            dialog, 
+            text="请输入专用词汇，每行一个。\n例如：\n技术术语\n专有名词\n行业术语",
+            wraplength=350
+        ).pack(pady=10)
+
+        # 文本输入框
+        vocab_text = ctk.CTkTextbox(dialog, width=350, height=300)
+        vocab_text.pack(pady=10)
+
+        def save_vocab():
+            """保存专用词汇"""
+            # 获取输入的词汇，并去除空行
+            vocabs = [
+                v.strip() for v in vocab_text.get("1.0", tk.END).split('\n') 
+                if v.strip()
+            ]
+            
+            # 更新专用词汇列表
+            self.custom_vocab = vocabs
+            
+            # 提示保存成功
+            messagebox.showinfo("提示", f"成功添加 {len(vocabs)} 个专用词汇")
+            
+            dialog.destroy()
+
+        # 保存按钮
+        save_button = ctk.CTkButton(
+            dialog, 
+            text="保存", 
+            command=save_vocab,
+            fg_color="#4CAF50",
+            hover_color="#45a049"
+        )
+        save_button.pack(pady=10)
 
     def create_translate_button(self):
         self.translate_button = ctk.CTkButton(
@@ -299,6 +356,7 @@ class TranslatorApp:
             daemon=True
         )
         translation_thread.start()
+
     def run_translation(self):
         """翻译执行逻辑"""
         try:
@@ -334,7 +392,8 @@ class TranslatorApp:
             # 创建字幕翻译器
             subtitle_translator = SmartSubtitleTranslator(
                 translator=translator, 
-                max_workers=max_workers
+                max_workers=max_workers,
+                custom_vocab=self.custom_vocab  # 传入自定义词汇
             )
 
             # 准备处理文件
