@@ -200,7 +200,7 @@ class TranslatorApp:
         # 说明标签
         ctk.CTkLabel(
             dialog, 
-            text="请输入专用词汇，每行一个。\n例如：\n苹果 Apple\微软 Microsoft\n谷歌 Google",
+            text="请输入专用词汇，每行一个。\n例如：\n苹果 Apple\n微软 Microsoft\n谷歌 Google",
             wraplength=350
         ).pack(pady=10)
 
