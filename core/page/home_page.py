@@ -75,13 +75,6 @@ class HomePage(ctk.CTkFrame):
         )
         docs_link.pack(side="left", padx=10)
 
-    def goto_translator(self):
-        # 这里假设 self.master 是 BaseApp 实例
-        # 调用 BaseApp 中的 show_page 方法切换到翻译页面
-        if hasattr(self.master, 'show_page'):
-            self.master.show_page("翻译")
-        else:
-            messagebox.showwarning("提示", "无法切换到翻译页面")
 
 
     def open_github(self):
