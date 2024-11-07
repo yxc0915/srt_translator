@@ -74,13 +74,13 @@ class SmartSubtitleTranslator:
 
         请用简洁、专业的语言总结这些信息，为后续翻译提供指导。
 
-        文本内容（前500字）：
-        {full_text[:500]}
+        文本内容（前2500字）：
+        {full_text[:2500]}
         """
         
         try:
             context_summary = self.translator.translate(
-                text=full_text[:500],  # 只分析前500字
+                text=full_text[:2500],  # 只分析前2500字
                 system_prompt=analysis_prompt,
                 temperature=0.3
             )
