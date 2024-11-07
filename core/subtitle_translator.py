@@ -17,7 +17,7 @@ class Subtitle:
 
 class SmartSubtitleTranslator:
     def __init__(self, translator, max_workers=5, max_tokens=2000, 
-                 max_retries=3, retry_delay_base=1):
+                 max_retries=3, retry_delay_base=1, custom_vocab=None):
         self.translator = translator
         self.max_workers = max_workers
         self.max_tokens = max_tokens
@@ -26,6 +26,7 @@ class SmartSubtitleTranslator:
         self.context_summary = None
         self.target_language = None
         self.source_language = None
+        self.custom_vocab = custom_vocab or []  # 新增自定义词汇属性
 
     def count_tokens(self, text):
         try:
@@ -137,6 +138,9 @@ class SmartSubtitleTranslator:
                     你是一个专业的字幕翻译专家。以下是关于这个视频/内容的背景信息：
     
                     {context_summary}
+
+                    专用词汇列表（请在翻译时特别注意）：
+                    {"\n".join(self.custom_vocab) if self.custom_vocab else "无特殊词汇"}
     
                     翻译要求：
                     1. 仅翻译"待翻译文本"部分
@@ -218,7 +222,6 @@ class SmartSubtitleTranslator:
                     translated_texts[index] = "[处理失败]"
             
             return translated_texts
-
 
     def process_subtitle_file(self, file_path, target_language) -> Tuple[str, str]:
         """完整的字幕处理流程，增加全面的错误处理"""
