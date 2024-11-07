@@ -3,6 +3,7 @@ import customtkinter as ctk
 from core.page.home_page import HomePage
 from core.page.settings_page import SettingsPage
 from core.page.translator_page import TranslatorPage
+from core.page.transcription_page import TranscriptionPage
 
 class BaseApp:
     def __init__(self, master):
