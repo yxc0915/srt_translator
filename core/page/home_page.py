@@ -79,7 +79,7 @@ class HomePage(ctk.CTkFrame):
         pass
 
     def open_github(self):
-        webbrowser.open("https://github.com/yourusername/subtitle_translator")
+        webbrowser.open("https://github.com/yxc0915/srt_translator")
 
     def open_docs(self):
-        webbrowser.open("https://github.com/yourusername/subtitle_translator/wiki")
+        webbrowser.open("https://github.com/yxc0915/srt_translator/")
