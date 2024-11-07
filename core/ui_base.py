@@ -38,6 +38,7 @@ class BaseApp:
         self.pages = {
             "主页": HomePage(self.page_frame),
             "翻译": TranslatorPage(self.page_frame),
+            "转录": TranscriptionPage(self.page_frame), 
             "设置": SettingsPage(self.page_frame)
         }
 
@@ -50,7 +51,7 @@ class BaseApp:
         nav_frame.pack(fill="x", padx=20, pady=(20, 0))
 
         # 为每个页面创建导航按钮
-        for page_name in ["主页", "翻译", "设置"]:
+        for page_name in ["主页", "翻译", "转录", "设置"]:
             button = ctk.CTkButton(
                 nav_frame, 
                 text=page_name, 
