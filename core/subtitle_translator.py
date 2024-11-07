@@ -61,10 +61,13 @@ class SmartSubtitleTranslator:
         if len(full_text.strip()) < 50:
             print("文本内容过短，无法进行分析")
             return None
-
+    
+        # 准备专用词汇部分
+        vocab_section = "\n专用词汇列表（如有）：\n" + "\n".join(self.custom_vocab) if self.custom_vocab else ""
+    
         analysis_prompt = f"""
         请以专业的角度分析以下字幕文本的整体内容，并提供详细且精准的分析报告：
-
+    
         1. 内容类型（如：电视剧、纪录片、访谈、教育视频等）
         2. 主要主题和核心情节
         3. 关键人物或角色特点
@@ -72,9 +75,11 @@ class SmartSubtitleTranslator:
         5. 特定的专有名词，方便后续固定翻译（同时列出英文原文和译文）
         6. 语言风格和语气特点
         7. 可能的目标受众
-
+    
+        {vocab_section}
+    
         请用简洁、专业的语言总结这些信息，为后续翻译提供指导。
-
+    
         文本内容（前2500字）：
         {full_text[:2500]}
         """
@@ -90,12 +95,13 @@ class SmartSubtitleTranslator:
             if not context_summary or context_summary.strip() == '':
                 print("内容分析返回为空")
                 return None
-            
-            return context_summary
-        except Exception as e:
-            print(f"内容分析失败: {e}")
-            print(f"Traceback: {traceback.format_exc()}")
-            return None
+        
+        return context_summary
+    except Exception as e:
+        print(f"内容分析失败: {e}")
+        print(f"Traceback: {traceback.format_exc()}")
+        return None
+
 
     def translate_with_context(self, subtitles):
         """第二阶段：基于上下文进行批量翻译"""
