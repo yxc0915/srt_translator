@@ -16,7 +16,7 @@ class HomePage(ctk.CTkFrame):
         # 版本和简介
         version_label = ctk.CTkLabel(
             self, 
-            text="Version 2.1 - 智能字幕翻译工具", 
+            text="Version 2.2 - 智能字幕翻译工具", 
             font=("Microsoft YaHei", 14)
         )
         version_label.pack(pady=(0, 20))
