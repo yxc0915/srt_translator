@@ -17,7 +17,7 @@ class Subtitle:
 
 class SmartSubtitleTranslator:
     def __init__(self, translator, max_workers=5, max_tokens=2000, 
-                 max_retries=3, retry_delay_base=1, custom_vocab=None):
+                 max_retries=3, retry_delay_base=30, custom_vocab=None):
         self.translator = translator
         self.max_workers = max_workers
         self.max_tokens = max_tokens
@@ -70,9 +70,9 @@ class SmartSubtitleTranslator:
     
         1. 内容类型（如：电视剧、纪录片、访谈、教育视频等）
         2. 主要主题和核心情节
-        3. 关键人物或角色特点
+        3. 关键人物或角色特点，以及他们的固定翻译（同时列出英文原文和译文）
         4. 特定的地点或场景，固定翻译（同时列出英文原文和译文）
-        5. 特定的专有名词，方便后续固定翻译（同时列出英文原文和译文）
+        5. 未包含在以下专用词汇列表中的新的特定专有名词（如果发现新的特定专有名词，请列出其英文原文及对应的建议译文，以便后续翻译固定）
         6. 语言风格和语气特点
         7. 可能的目标受众
     
@@ -150,11 +150,14 @@ class SmartSubtitleTranslator:
     
                     翻译要求：
                     1. 仅翻译"待翻译文本"部分
-                    2. 保持原文的语气和风格
-                    3. 确保翻译自然流畅
+                    2. 保持原文的语气和风格，调整为更符合中文语境和逻辑的表达。整体语言风格应略带轻松但专业，以适应DND视频观众的预期。
+                    3. 确保翻译自然流畅，便于视频观众理解，同时保留DND的奇幻氛围。
                     4. 严格只返回翻译结果，不要添加任何其他内容
-                    5. 我会为你在待翻译文本前后提供它的上下文，请你不要翻译它们
-                    6. 程序会默认第一行为翻译结果，并自动截取第一行
+                    5. 我会为你在待翻译文本前后提供它的上下文，请你不要翻译它们。翻译时参考上下文（包括已翻译的前文和未翻译的后文），保证语义一致。
+                    6. 注意整段语义连贯性，避免逐句割裂翻译。
+                    7. 理解每句在上下文中的含义，确保翻译后的逻辑清晰。保证不要跟上下文有突然转折。
+                    8. 程序会默认第一行为翻译结果，并自动截取第一行
+                    9. 有关专有名词和法术等，使用「」标注
     
                     已翻译上文（前10句）：
                     {"\n".join(prev_context)}
@@ -197,8 +200,7 @@ class SmartSubtitleTranslator:
                             # 对于其他类型错误，返回原文并附加详细错误信息
                             return f"[翻译错误：{str(e)}] {subtitle.text}"
                     
-                    # 重试间隔（指数退避）
-                    time.sleep(2 ** retry)
+                    time.sleep(60)
             
             # 理论上不会执行到这里，但保险起见
             return f"[翻译失败] {subtitle.text}"
