@@ -197,8 +197,8 @@ class SmartSubtitleTranslator:
                             # 对于其他类型错误，返回原文并附加详细错误信息
                             return f"[翻译错误：{str(e)}] {subtitle.text}"
                     
-                    # 重试间隔（指数退避）
-                    time.sleep(2 ** retry)
+                    # 重试间隔
+                    time.sleep(60 ** retry)
             
             # 理论上不会执行到这里，但保险起见
             return f"[翻译失败] {subtitle.text}"
