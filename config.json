@@ -1,0 +1,30 @@
+{
+    "apis": [
+        {
+            "name": "OpenAI",
+            "base_url": "https://api.openai.com/v1",
+            "api_type": "openai",
+            "models": [
+                "gpt-3.5-turbo",
+                "gpt-4"
+            ],
+            "api_key": ""
+        },
+        {
+            "name": "Azure OpenAI",
+            "base_url": "https://your-azure-endpoint.openai.azure.com/",
+            "api_type": "azure",
+            "models": [
+                "gpt-3.5-turbo",
+                "gpt-4"
+            ],
+            "api_key": ""
+        }
+    ],
+    "default_settings": {
+        "source_lang": "English",
+        "target_lang": "Chinese",
+        "max_tokens": 4096,
+        "last_used_api": "OpenAI"
+    }
+}
