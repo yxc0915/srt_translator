@@ -23,7 +23,7 @@ https://github.com/user-attachments/assets/2efcc7cc-e0a3-4911-8925-d012c2313750
 ## 项目结构
 
 ```
-subtitle_translator/
+srt_translator/
 │
 ├── app.py                 # 程序入口
 ├── config.py              # 配置管理
