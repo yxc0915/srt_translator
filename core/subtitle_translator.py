@@ -17,7 +17,7 @@ class Subtitle:
 
 class SmartSubtitleTranslator:
     def __init__(self, translator, max_workers=5, max_tokens=2000, 
-                 max_retries=3, retry_delay_base=30, custom_vocab=None):
+                 max_retries=3, retry_delay_base=1, custom_vocab=None):
         self.translator = translator
         self.max_workers = max_workers
         self.max_tokens = max_tokens
@@ -70,9 +70,9 @@ class SmartSubtitleTranslator:
     
         1. 内容类型（如：电视剧、纪录片、访谈、教育视频等）
         2. 主要主题和核心情节
-        3. 关键人物或角色特点，以及他们的固定翻译（同时列出英文原文和译文）
+        3. 关键人物或角色特点
         4. 特定的地点或场景，固定翻译（同时列出英文原文和译文）
-        5. 未包含在以下专用词汇列表中的新的特定专有名词（如果发现新的特定专有名词，请列出其英文原文及对应的建议译文，以便后续翻译固定）
+        5. 特定的专有名词，方便后续固定翻译（同时列出英文原文和译文）
         6. 语言风格和语气特点
         7. 可能的目标受众
     
@@ -150,30 +150,11 @@ class SmartSubtitleTranslator:
     
                     翻译要求：
                     1. 仅翻译"待翻译文本"部分
-                    2. 保持原文的语气和风格，调整为更符合中文语境和逻辑的表达。整体语言风格应略带轻松但专业，以适应DND视频观众的预期。
-                    3. 确保翻译自然流畅，便于视频观众理解，同时保留DND的奇幻氛围。
+                    2. 保持原文的语气和风格
+                    3. 确保翻译自然流畅
                     4. 严格只返回翻译结果，不要添加任何其他内容
-                    5. 我会为你在待翻译文本前后提供它的上下文，请你不要翻译它们。
-                    6. 当前句子翻译需参考上下文，但不得提前翻译后续句子的具体内容。
-                    7. 翻译需为后续内容留出逻辑衔接空间，避免突兀地断句。
-                    8. 当句子逻辑复杂时，可根据中文习惯断句，并将部分内容转移到下一句。例子：
-                    示例：
-                    英文原文：
-                    第一句：
-                    MARISHA: I mean, we could Stone Shape it and I could like Stone Shape it and bury it somewhere in 
-                    第二句：
-                    our Keep.
-
-                    理想翻译：
-                    第一句：
-                    玛丽莎：我的意思是，我们可以用「塑石术」把它变成石头，然后——
-                    第二句：
-                    埋在我们的「灰颅堡」某个地方。
-
-                    9. 保持上下文的连贯性和整体语气一致，句间语义需自然衔接。
-                    10. 禁止重复翻译上下文内容，仅使用当前句的信息完成翻译。
-                    11. 程序会默认第一行为翻译结果，并自动截取第一行
-                    12. 有关专有名词和法术等，使用「」标注
+                    5. 我会为你在待翻译文本前后提供它的上下文，请你不要翻译它们
+                    6. 程序会默认第一行为翻译结果，并自动截取第一行
     
                     已翻译上文（前10句）：
                     {"\n".join(prev_context)}
@@ -215,9 +196,9 @@ class SmartSubtitleTranslator:
                         else:
                             # 对于其他类型错误，返回原文并附加详细错误信息
                             return f"[翻译错误：{str(e)}] {subtitle.text}"
-                   # 重试间隔                    
-                    time.sleep(60)
-
+                    
+                    # 重试间隔
+                    time.sleep(60 ** retry)
             
             # 理论上不会执行到这里，但保险起见
             return f"[翻译失败] {subtitle.text}"
